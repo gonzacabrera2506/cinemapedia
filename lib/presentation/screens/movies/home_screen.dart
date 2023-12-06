@@ -30,24 +30,28 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     super.initState();
 
     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+    ref.read(popularMoviesProvider.notifier).loadNextPage();
   }
 
   @override
   Widget build(BuildContext context) {
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
     final slideShowMovies = ref.watch(moviesSlideshowProvider);
+    final popularMovies = ref.watch(popularMoviesProvider);
 
     //if (nowPlayingMovies.length == 0) return CircularProgressIndicator();
 
     return CustomScrollView(slivers: [
       const SliverAppBar(
         floating: true,
+        flexibleSpace: FlexibleSpaceBar(
+          title: CustomAppbar(),
+        ),
       ),
       SliverList(
           delegate: SliverChildBuilderDelegate((context, index) {
         return Column(
           children: [
-            const CustomAppbar(),
             MoviesSlideshow(movies: slideShowMovies),
             MovieHorizontalListview(
               movies: nowPlayingMovies,
@@ -56,7 +60,13 @@ class _HomeViewState extends ConsumerState<_HomeView> {
               loadNextPage: () =>
                   ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
             ),
-            MoviesSlideshow(movies: slideShowMovies),
+            MovieHorizontalListview(
+              movies: popularMovies,
+              title: 'Populares',
+              //subtitle: 'Lunes 20',
+              loadNextPage: () =>
+                  ref.read(popularMoviesProvider.notifier).loadNextPage(),
+            ),
             MovieHorizontalListview(
               movies: nowPlayingMovies,
               title: 'Proximamente',
@@ -64,15 +74,6 @@ class _HomeViewState extends ConsumerState<_HomeView> {
               loadNextPage: () =>
                   ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
             ),
-            MoviesSlideshow(movies: slideShowMovies),
-            MovieHorizontalListview(
-              movies: nowPlayingMovies,
-              title: 'Populares',
-              //subtitle: 'Lunes 20',
-              loadNextPage: () =>
-                  ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
-            ),
-            MoviesSlideshow(movies: slideShowMovies),
             MovieHorizontalListview(
               movies: nowPlayingMovies,
               title: 'Mejor calificadas',
