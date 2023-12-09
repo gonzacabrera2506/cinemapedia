@@ -31,15 +31,20 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
     ref.read(popularMoviesProvider.notifier).loadNextPage();
+    ref.read(topRatedMoviesProvider.notifier).loadNextPage();
+    ref.read(upcomingMoviesProvider.notifier).loadNextPage();
   }
 
   @override
   Widget build(BuildContext context) {
-    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
-    final slideShowMovies = ref.watch(moviesSlideshowProvider);
-    final popularMovies = ref.watch(popularMoviesProvider);
+    final initialLoading = ref.watch(initialLoadingProvider);
+    if (initialLoading) return const FullScreenLoader();
 
-    //if (nowPlayingMovies.length == 0) return CircularProgressIndicator();
+    final slideShowMovies = ref.watch(moviesSlideshowProvider);
+    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+    final popularMovies = ref.watch(popularMoviesProvider);
+    final topRatedMovies = ref.watch(popularMoviesProvider);
+    final upcomingMovies = ref.watch(popularMoviesProvider);
 
     return CustomScrollView(slivers: [
       const SliverAppBar(
@@ -68,18 +73,18 @@ class _HomeViewState extends ConsumerState<_HomeView> {
                   ref.read(popularMoviesProvider.notifier).loadNextPage(),
             ),
             MovieHorizontalListview(
-              movies: nowPlayingMovies,
-              title: 'Proximamente',
-              subtitle: 'En este mes',
+              movies: topRatedMovies,
+              title: 'Las top del mes',
+              subtitle: 'Favoritas',
               loadNextPage: () =>
-                  ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
+                  ref.read(topRatedMoviesProvider.notifier).loadNextPage(),
             ),
             MovieHorizontalListview(
-              movies: nowPlayingMovies,
-              title: 'Mejor calificadas',
-              subtitle: 'Desde siempre',
+              movies: upcomingMovies,
+              title: 'Proximamente',
+              subtitle: 'En camino',
               loadNextPage: () =>
-                  ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
+                  ref.read(upcomingMoviesProvider.notifier).loadNextPage(),
             ),
             const SizedBox(
               height: 20,
