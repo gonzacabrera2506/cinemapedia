@@ -1,19 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:animate_do/animate_do.dart';
+import 'package:cinemapedia/domain/entities/movie.dart';
 
-class SearchMovieDelegate extends SearchDelegate {
+typedef SearchMoviesCallback = Future<List<Movie>> Function(String query);
+
+class SearchMovieDelegate extends SearchDelegate<Movie?> {
+  final SearchMoviesCallback searchMovies;
+
+  SearchMovieDelegate({required this.searchMovies});
+
   @override
-  String get searchFieldLabel => 'hola';
+  String get searchFieldLabel => 'Buscar pelicula';
 
   @override
   List<Widget>? buildActions(BuildContext context) {
-    // TODO: implement buildActions
-    throw UnimplementedError();
+    return [
+      FadeIn(
+        animate: query.isNotEmpty,
+        child: IconButton(
+          onPressed: () => query = '',
+          icon: const Icon(Icons.clear),
+        ),
+      )
+    ];
   }
 
   @override
   Widget? buildLeading(BuildContext context) {
-    // TODO: implement buildLeading
-    throw UnimplementedError();
+    return IconButton(
+      onPressed: () => close(context, null),
+      icon: const Icon(Icons.arrow_back),
+    );
   }
 
   @override
@@ -24,7 +41,22 @@ class SearchMovieDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    // TODO: implement buildSuggestions
-    throw UnimplementedError();
+    return FutureBuilder(
+      future: searchMovies(query),
+      initialData: const [],
+      builder: (context, snapshot) {
+        final movies = snapshot.data ?? [];
+
+        return ListView.builder(
+          itemCount: movies.length,
+          itemBuilder: (context, index) {
+            final movie = movies[index];
+            return ListTile(
+              title: Text(movie.title),
+            );
+          },
+        );
+      },
+    );
   }
 }
