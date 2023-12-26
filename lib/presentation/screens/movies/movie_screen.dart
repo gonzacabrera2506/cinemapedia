@@ -66,6 +66,16 @@ class _CustomSliverAppBar extends StatelessWidget {
       backgroundColor: Colors.black,
       expandedHeight: size.height * 0.7,
       foregroundColor: Colors.white,
+      actions: [
+        IconButton(
+          onPressed: () {},
+          //icon: const Icon(Icons.favorite_border),
+          icon: const Icon(
+            Icons.favorite_outline_rounded,
+            color: Colors.red,
+          ),
+        )
+      ],
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         // title: Text(
